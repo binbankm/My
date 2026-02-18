@@ -9,7 +9,19 @@
 
 ## 快速安装 / Quick Installation
 
-### 方法 1: 使用安装脚本 / Method 1: Using Install Script
+### 方法 1: 一键远程安装（推荐）/ Method 1: One-line Remote Installation (Recommended)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/binbankm/My/main/scripts/remote-install.sh | sudo bash
+```
+
+或者使用 wget / Or using wget:
+
+```bash
+wget -qO- https://raw.githubusercontent.com/binbankm/My/main/scripts/remote-install.sh | sudo bash
+```
+
+### 方法 2: 使用安装脚本 / Method 2: Using Install Script
 
 ```bash
 # 下载最新版本 / Download latest release
@@ -23,7 +35,7 @@ cd serverpanel
 sudo ./install.sh
 ```
 
-### 方法 2: 手动安装 / Method 2: Manual Installation
+### 方法 3: 手动安装 / Method 3: Manual Installation
 
 ```bash
 # 1. 创建目录 / Create directory
@@ -143,6 +155,14 @@ sudo journalctl -u serverpanel -n 100
 ```
 
 ## 卸载 / Uninstall
+
+**使用远程卸载脚本 / Using remote uninstall script:**
+
+```bash
+wget -qO- https://raw.githubusercontent.com/binbankm/My/main/scripts/uninstall.sh | sudo bash
+```
+
+**或使用本地卸载脚本 / Or using local uninstall script:**
 
 ```bash
 # 使用卸载脚本 / Using uninstall script
