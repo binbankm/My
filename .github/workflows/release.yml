@@ -1,3 +1,4 @@
+---
 name: Build and Release
 
 on:
@@ -56,21 +57,27 @@ jobs:
           GOARCH: ${{ matrix.arch }}
         run: |
           if [ "${{ matrix.os }}" = "windows" ]; then
-            go build -o serverpanel-${{ matrix.os }}-${{ matrix.arch }}.exe main.go
+            OUTPUT="serverpanel-${{ matrix.os }}-${{ matrix.arch }}.exe"
+            go build -o "$OUTPUT" main.go
           else
-            go build -o serverpanel-${{ matrix.os }}-${{ matrix.arch }} main.go
+            OUTPUT="serverpanel-${{ matrix.os }}-${{ matrix.arch }}"
+            go build -o "$OUTPUT" main.go
           fi
 
       - name: Create package
         run: |
           mkdir -p release
           if [ "${{ matrix.os }}" = "windows" ]; then
-            zip -r release/serverpanel-${{ matrix.os }}-${{ matrix.arch }}.zip serverpanel-${{ matrix.os }}-${{ matrix.arch }}.exe
+            EXE="serverpanel-${{ matrix.os }}-${{ matrix.arch }}.exe"
+            ZIP="release/serverpanel-${{ matrix.os }}-${{ matrix.arch }}.zip"
+            zip -r "$ZIP" "$EXE"
           else
+            BIN="serverpanel-${{ matrix.os }}-${{ matrix.arch }}"
+            TAR="release/$BIN.tar.gz"
             cp scripts/install.sh .
             cp scripts/uninstall.sh .
             chmod +x install.sh uninstall.sh
-            tar -czf release/serverpanel-${{ matrix.os }}-${{ matrix.arch }}.tar.gz serverpanel-${{ matrix.os }}-${{ matrix.arch }} install.sh uninstall.sh README.md
+            tar -czf "$TAR" "$BIN" install.sh uninstall.sh README.md
           fi
 
       - name: Upload artifact
