@@ -13,8 +13,9 @@ import (
 func getAllowedOrigins() string {
 	origins := os.Getenv("CORS_ORIGINS")
 	if origins == "" {
-		// Default to localhost for development
-		return "http://localhost:3000,http://localhost:8888"
+		// Default origins for development
+		// In production, this will fall back to allowing same-origin requests
+		return "http://localhost:3000,http://localhost:8888,http://127.0.0.1:3000,http://127.0.0.1:8888"
 	}
 	return origins
 }
@@ -22,16 +23,44 @@ func getAllowedOrigins() string {
 // CORS middleware
 func CORS() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		allowedOrigins := getAllowedOrigins()
 		origin := c.GetHeader("Origin")
 		
-		// Check if origin is allowed
-		if origin != "" && contains(strings.Split(allowedOrigins, ","), origin) {
+		// If no Origin header, this is a same-origin request, allow it
+		if origin == "" {
+			c.Next()
+			return
+		}
+		
+		// Check if origin is explicitly allowed in configuration
+		allowedOrigins := getAllowedOrigins()
+		originsList := strings.Split(allowedOrigins, ",")
+		
+		if contains(originsList, origin) {
+			// Origin is in the allowed list
 			c.Writer.Header().Set("Access-Control-Allow-Origin", origin)
 		} else if os.Getenv("GIN_MODE") != "release" {
 			// DEVELOPMENT ONLY: Allow all origins in dev mode
 			// WARNING: This should NEVER be used in production - set GIN_MODE=release
 			c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		} else {
+			// Production mode: Allow the request origin if it matches the host
+			// This handles the case where the frontend is served from the same server
+			scheme := "http"
+			if c.Request.TLS != nil {
+				scheme = "https"
+			}
+			host := c.Request.Host
+			requestOrigin := scheme + "://" + host
+			
+			// If the origin matches where we're serving from, allow it
+			if origin == requestOrigin {
+				c.Writer.Header().Set("Access-Control-Allow-Origin", origin)
+			} else {
+				// Origin not allowed - do not set CORS headers
+				// This will cause the browser to block the request
+				c.AbortWithStatus(http.StatusForbidden)
+				return
+			}
 		}
 		
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
