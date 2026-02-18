@@ -52,6 +52,20 @@ A lightweight Linux server management panel similar to 1Panel, providing system 
 
 #### 安装
 
+**方法一：一键远程安装（推荐）**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/binbankm/My/main/scripts/remote-install.sh | sudo bash
+```
+
+或者使用 wget：
+
+```bash
+wget -qO- https://raw.githubusercontent.com/binbankm/My/main/scripts/remote-install.sh | sudo bash
+```
+
+**方法二：手动安装**
+
 ```bash
 # 下载最新版本
 wget https://github.com/binbankm/My/releases/latest/download/serverpanel-linux-amd64.tar.gz
@@ -76,6 +90,20 @@ sudo systemctl start serverpanel
 - 密码: `admin123`
 
 > ⚠️ **重要**: 首次登录后请立即修改默认密码！
+
+#### 卸载
+
+```bash
+# 下载并运行卸载脚本
+wget -qO- https://raw.githubusercontent.com/binbankm/My/main/scripts/uninstall.sh | sudo bash
+```
+
+或者如果您已经有安装包：
+
+```bash
+cd serverpanel
+sudo ./uninstall.sh
+```
 
 ### 📖 文档
 
@@ -176,6 +204,20 @@ go build -o serverpanel main.go
 
 #### Installation
 
+**Method 1: One-line Remote Installation (Recommended)**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/binbankm/My/main/scripts/remote-install.sh | sudo bash
+```
+
+Or using wget:
+
+```bash
+wget -qO- https://raw.githubusercontent.com/binbankm/My/main/scripts/remote-install.sh | sudo bash
+```
+
+**Method 2: Manual Installation**
+
 ```bash
 # Download latest release
 wget https://github.com/binbankm/My/releases/latest/download/serverpanel-linux-amd64.tar.gz
@@ -200,6 +242,20 @@ Open browser and visit: `http://your-server-ip:8888`
 - Password: `admin123`
 
 > ⚠️ **Important**: Change the default password immediately after first login!
+
+#### Uninstallation
+
+```bash
+# Download and run uninstall script
+wget -qO- https://raw.githubusercontent.com/binbankm/My/main/scripts/uninstall.sh | sudo bash
+```
+
+Or if you already have the package:
+
+```bash
+cd serverpanel
+sudo ./uninstall.sh
+```
 
 ### 📖 Documentation
 
