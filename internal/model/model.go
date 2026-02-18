@@ -48,7 +48,7 @@ func InitDB() error {
 		// Default password: admin123 (you should hash this properly)
 		admin := User{
 			Username: "admin",
-			Password: "$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy", // bcrypt hash of "admin123"
+			Password: "$2a$10$2URxF2u7riYpkieZii9to.rPNlWKXNmBsKXkxdKzIBA3rPJ9yKoB2", // bcrypt hash of "admin123"
 			IsAdmin:  true,
 		}
 		DB.Create(&admin)
