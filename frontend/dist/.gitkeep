@@ -1,0 +1,1 @@
+# This file ensures the frontend/dist directory exists for the go:embed directive in main.go
