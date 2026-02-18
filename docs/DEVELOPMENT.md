@@ -186,14 +186,16 @@ Use browser DevTools:
 
 ## Release Process
 
-Releases are automated via GitHub Actions:
+Releases are fully automated via GitHub Actions:
 
-1. Merge changes to `main` branch
-2. Auto-tag workflow creates a new version tag
-3. Release workflow builds binaries for all platforms
-4. Artifacts are attached to the GitHub release
+1. Merge changes to `main` or `master` branch
+2. The Auto Tag and Release workflow automatically:
+   - Creates a new version tag (increments patch version)
+   - Builds binaries for all platforms (Linux, macOS, Windows)
+   - Creates a GitHub release with all artifacts
+3. Download releases from the GitHub releases page
 
-Manual tagging:
+Manual tagging (will trigger the release workflow):
 ```bash
 git tag -a v1.0.0 -m "Release v1.0.0"
 git push origin v1.0.0
