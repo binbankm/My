@@ -2,16 +2,37 @@ package middleware
 
 import (
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/binbankm/My/internal/util"
 	"github.com/gin-gonic/gin"
 )
 
+// getAllowedOrigins returns configured CORS origins
+func getAllowedOrigins() string {
+	origins := os.Getenv("CORS_ORIGINS")
+	if origins == "" {
+		// Default to localhost for development
+		return "http://localhost:3000,http://localhost:8888"
+	}
+	return origins
+}
+
 // CORS middleware
 func CORS() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		allowedOrigins := getAllowedOrigins()
+		origin := c.GetHeader("Origin")
+		
+		// Check if origin is allowed
+		if origin != "" && contains(strings.Split(allowedOrigins, ","), origin) {
+			c.Writer.Header().Set("Access-Control-Allow-Origin", origin)
+		} else if os.Getenv("GIN_MODE") != "release" {
+			// Allow all in development mode only
+			c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		}
+		
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
@@ -23,6 +44,16 @@ func CORS() gin.HandlerFunc {
 
 		c.Next()
 	}
+}
+
+// contains checks if a string slice contains a string
+func contains(slice []string, item string) bool {
+	for _, s := range slice {
+		if strings.TrimSpace(s) == item {
+			return true
+		}
+	}
+	return false
 }
 
 // AuthMiddleware validates JWT token

@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,14 +17,51 @@ type FileInfo struct {
 	ModTime string `json:"modTime"`
 }
 
+// getAllowedBasePath returns the allowed base path for file operations
+func getAllowedBasePath() string {
+	basePath := os.Getenv("FILE_MANAGER_BASE_PATH")
+	if basePath == "" {
+		basePath = "/home" // Default to /home directory
+	}
+	return basePath
+}
+
+// validatePath ensures the path is within allowed directory
+func validatePath(requestPath string) (string, error) {
+	basePath := getAllowedBasePath()
+	
+	// Clean the paths
+	cleanPath := filepath.Clean(requestPath)
+	cleanBase := filepath.Clean(basePath)
+	
+	// Make absolute
+	absPath, err := filepath.Abs(cleanPath)
+	if err != nil {
+		absPath = cleanPath
+	}
+	
+	// Check if path is within base path
+	if !strings.HasPrefix(absPath, cleanBase) {
+		absPath = filepath.Join(cleanBase, filepath.Base(cleanPath))
+	}
+	
+	return absPath, nil
+}
+
 // ListFiles lists files in a directory
 func ListFiles(c *gin.Context) {
 	dir := c.Query("path")
 	if dir == "" {
-		dir = "/"
+		dir = getAllowedBasePath()
 	}
 
-	files, err := os.ReadDir(dir)
+	validPath, err := validatePath(dir)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid path"})
+		return
+	}
+
+	files, err := os.ReadDir(validPath)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Cannot read directory"})
 		return
@@ -38,7 +76,7 @@ func ListFiles(c *gin.Context) {
 
 		fileList = append(fileList, FileInfo{
 			Name:    file.Name(),
-			Path:    filepath.Join(dir, file.Name()),
+			Path:    filepath.Join(validPath, file.Name()),
 			Size:    info.Size(),
 			IsDir:   file.IsDir(),
 			ModTime: info.ModTime().Format("2006-01-02 15:04:05"),
@@ -60,13 +98,19 @@ func CreateFile(c *gin.Context) {
 		return
 	}
 
+	validPath, err := validatePath(req.Path)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid path"})
+		return
+	}
+
 	if req.IsDir {
-		if err := os.MkdirAll(req.Path, 0755); err != nil {
+		if err := os.MkdirAll(validPath, 0755); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 	} else {
-		file, err := os.Create(req.Path)
+		file, err := os.Create(validPath)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
@@ -89,7 +133,13 @@ func UpdateFile(c *gin.Context) {
 		return
 	}
 
-	if err := os.WriteFile(req.Path, []byte(req.Content), 0644); err != nil {
+	validPath, err := validatePath(req.Path)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid path"})
+		return
+	}
+
+	if err := os.WriteFile(validPath, []byte(req.Content), 0644); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -105,7 +155,19 @@ func DeleteFile(c *gin.Context) {
 		return
 	}
 
-	if err := os.RemoveAll(path); err != nil {
+	validPath, err := validatePath(path)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid path"})
+		return
+	}
+
+	// Additional check: don't allow deletion of base path itself
+	if validPath == getAllowedBasePath() {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Cannot delete base directory"})
+		return
+	}
+
+	if err := os.RemoveAll(validPath); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -121,7 +183,13 @@ func DownloadFile(c *gin.Context) {
 		return
 	}
 
-	c.FileAttachment(path, filepath.Base(path))
+	validPath, err := validatePath(path)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid path"})
+		return
+	}
+
+	c.FileAttachment(validPath, filepath.Base(validPath))
 }
 
 // UploadFile handles file upload
@@ -134,10 +202,16 @@ func UploadFile(c *gin.Context) {
 
 	path := c.PostForm("path")
 	if path == "" {
-		path = "/"
+		path = getAllowedBasePath()
 	}
 
-	dst := filepath.Join(path, file.Filename)
+	validPath, err := validatePath(path)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid path"})
+		return
+	}
+
+	dst := filepath.Join(validPath, file.Filename)
 	if err := c.SaveUploadedFile(file, dst); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

@@ -2,13 +2,22 @@ package util
 
 import (
 	"errors"
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
-var jwtSecret = []byte("your-secret-key-change-in-production")
+// getJWTSecret returns the JWT secret from environment or default
+func getJWTSecret() []byte {
+	secret := os.Getenv("JWT_SECRET")
+	if secret == "" {
+		// Default for development only - MUST be changed in production
+		secret = "change-this-secret-in-production-use-env-var"
+	}
+	return []byte(secret)
+}
 
 // Claims represents JWT claims
 type Claims struct {
@@ -29,13 +38,13 @@ func GenerateToken(userID uint, username string) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(jwtSecret)
+	return token.SignedString(getJWTSecret())
 }
 
 // ParseToken parses and validates a JWT token
 func ParseToken(tokenString string) (*Claims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
-		return jwtSecret, nil
+		return getJWTSecret(), nil
 	})
 
 	if err != nil {
