@@ -74,7 +74,6 @@ wget https://github.com/binbankm/My/releases/latest/download/serverpanel-linux-a
 tar -zxvf serverpanel-linux-amd64.tar.gz
 
 # 安装
-cd serverpanel
 sudo ./install.sh
 
 # 启动服务
@@ -98,10 +97,9 @@ sudo systemctl start serverpanel
 wget -qO- https://raw.githubusercontent.com/binbankm/My/main/scripts/uninstall.sh | sudo bash
 ```
 
-或者如果您已经有安装包：
+或者如果您已经解压了安装包：
 
 ```bash
-cd serverpanel
 sudo ./uninstall.sh
 ```
 
@@ -226,7 +224,6 @@ wget https://github.com/binbankm/My/releases/latest/download/serverpanel-linux-a
 tar -zxvf serverpanel-linux-amd64.tar.gz
 
 # Install
-cd serverpanel
 sudo ./install.sh
 
 # Start service
@@ -250,10 +247,9 @@ Open browser and visit: `http://your-server-ip:8888`
 wget -qO- https://raw.githubusercontent.com/binbankm/My/main/scripts/uninstall.sh | sudo bash
 ```
 
-Or if you already have the package:
+Or if you already extracted the package:
 
 ```bash
-cd serverpanel
 sudo ./uninstall.sh
 ```
 
