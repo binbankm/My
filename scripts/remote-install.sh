@@ -43,7 +43,6 @@ echo "Extracting package..."
 tar -zxf $PACKAGE
 
 echo "Installing ServerPanel..."
-cd serverpanel
 ./install.sh
 
 # Cleanup

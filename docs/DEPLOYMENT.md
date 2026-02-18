@@ -31,7 +31,6 @@ wget https://github.com/binbankm/My/releases/latest/download/serverpanel-linux-a
 tar -zxvf serverpanel-linux-amd64.tar.gz
 
 # 运行安装脚本 / Run install script
-cd serverpanel
 sudo ./install.sh
 ```
 
