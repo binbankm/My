@@ -34,6 +34,12 @@ esac
 # Create installation directory
 mkdir -p $INSTALL_DIR
 
+# Stop service if it's running (to avoid "Text file busy" error during re-installation)
+if systemctl is-active --quiet serverpanel 2>/dev/null; then
+  echo "Stopping existing ServerPanel service..."
+  systemctl stop serverpanel
+fi
+
 # Copy binary
 if [ -f "$BINARY" ]; then
   cp $BINARY $INSTALL_DIR/serverpanel
