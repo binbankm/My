@@ -158,11 +158,17 @@ jobs:
       - name: Display structure of downloaded files
         run: ls -R artifacts
 
+      - name: Prepare release files
+        run: |
+          mkdir -p release-files
+          find artifacts -type f \( -name "*.tar.gz" -o -name "*.zip" \) -exec cp {} release-files/ \;
+          ls -lh release-files/
+
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ needs.auto-tag.outputs.new_version }}
-          files: artifacts/**/*
+          files: release-files/*
           generate_release_notes: true
           draft: false
           prerelease: false
