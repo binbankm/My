@@ -1,0 +1,51 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+dist/
+build/
+main
+
+# Go
+*.o
+*.a
+*.test
+*.out
+vendor/
+go.work
+
+# Frontend
+node_modules/
+.DS_Store
+*.local
+.env
+.env.local
+.vite/
+frontend/dist/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+
+# Temp
+tmp/
+temp/
+*.tmp
+
+# Build artifacts
+*.tar.gz
+*.zip
+release/
+
+# Database
+*.db
