@@ -56,9 +56,9 @@ jobs:
           GOARCH: ${{ matrix.arch }}
         run: |
           if [ "${{ matrix.os }}" = "windows" ]; then
-            go build -o serverpanel-${{ matrix.os }}-${{ matrix.arch }}.exe cmd/server/main.go
+            go build -o serverpanel-${{ matrix.os }}-${{ matrix.arch }}.exe main.go
           else
-            go build -o serverpanel-${{ matrix.os }}-${{ matrix.arch }} cmd/server/main.go
+            go build -o serverpanel-${{ matrix.os }}-${{ matrix.arch }} main.go
           fi
 
       - name: Create package

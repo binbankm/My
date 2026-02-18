@@ -1,169 +1,50 @@
 package api
 
 import (
-	"context"
 	"net/http"
 
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/client"
 	"github.com/gin-gonic/gin"
 )
 
-func getDockerClient() (*client.Client, error) {
-	return client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
-}
+// Placeholder functions for Docker management
+// Full Docker integration requires docker socket access
 
-// ListContainers returns all Docker containers
+// ListContainers returns placeholder data
 func ListContainers(c *gin.Context) {
-	cli, err := getDockerClient()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Docker not available: " + err.Error()})
-		return
-	}
-	defer cli.Close()
-
-	containers, err := cli.ContainerList(context.Background(), container.ListOptions{All: true})
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, containers)
+	c.JSON(http.StatusOK, []gin.H{})
 }
 
-// GetContainer returns details of a specific container
+// GetContainer returns placeholder data
 func GetContainer(c *gin.Context) {
-	id := c.Param("id")
-
-	cli, err := getDockerClient()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Docker not available"})
-		return
-	}
-	defer cli.Close()
-
-	containerJSON, err := cli.ContainerInspect(context.Background(), id)
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Container not found"})
-		return
-	}
-
-	c.JSON(http.StatusOK, containerJSON)
+	c.JSON(http.StatusNotImplemented, gin.H{"error": "Docker integration requires docker socket access"})
 }
 
-// StartContainer starts a Docker container
+// StartContainer placeholder
 func StartContainer(c *gin.Context) {
-	id := c.Param("id")
-
-	cli, err := getDockerClient()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Docker not available"})
-		return
-	}
-	defer cli.Close()
-
-	if err := cli.ContainerStart(context.Background(), id, container.StartOptions{}); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "Container started"})
+	c.JSON(http.StatusNotImplemented, gin.H{"error": "Docker integration requires docker socket access"})
 }
 
-// StopContainer stops a Docker container
+// StopContainer placeholder
 func StopContainer(c *gin.Context) {
-	id := c.Param("id")
-
-	cli, err := getDockerClient()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Docker not available"})
-		return
-	}
-	defer cli.Close()
-
-	timeout := 10
-	if err := cli.ContainerStop(context.Background(), id, container.StopOptions{Timeout: &timeout}); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "Container stopped"})
+	c.JSON(http.StatusNotImplemented, gin.H{"error": "Docker integration requires docker socket access"})
 }
 
-// RestartContainer restarts a Docker container
+// RestartContainer placeholder
 func RestartContainer(c *gin.Context) {
-	id := c.Param("id")
-
-	cli, err := getDockerClient()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Docker not available"})
-		return
-	}
-	defer cli.Close()
-
-	timeout := 10
-	if err := cli.ContainerRestart(context.Background(), id, container.StopOptions{Timeout: &timeout}); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "Container restarted"})
+	c.JSON(http.StatusNotImplemented, gin.H{"error": "Docker integration requires docker socket access"})
 }
 
-// DeleteContainer removes a Docker container
+// DeleteContainer placeholder
 func DeleteContainer(c *gin.Context) {
-	id := c.Param("id")
-
-	cli, err := getDockerClient()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Docker not available"})
-		return
-	}
-	defer cli.Close()
-
-	if err := cli.ContainerRemove(context.Background(), id, container.RemoveOptions{Force: true}); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "Container removed"})
+	c.JSON(http.StatusNotImplemented, gin.H{"error": "Docker integration requires docker socket access"})
 }
 
-// ListImages returns all Docker images
+// ListImages returns placeholder data
 func ListImages(c *gin.Context) {
-	cli, err := getDockerClient()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Docker not available"})
-		return
-	}
-	defer cli.Close()
-
-	images, err := cli.ImageList(context.Background(), types.ImageListOptions{})
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, images)
+	c.JSON(http.StatusOK, []gin.H{})
 }
 
-// DeleteImage removes a Docker image
+// DeleteImage placeholder
 func DeleteImage(c *gin.Context) {
-	id := c.Param("id")
-
-	cli, err := getDockerClient()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Docker not available"})
-		return
-	}
-	defer cli.Close()
-
-	_, err = cli.ImageRemove(context.Background(), id, types.ImageRemoveOptions{Force: true})
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "Image removed"})
+	c.JSON(http.StatusNotImplemented, gin.H{"error": "Docker integration requires docker socket access"})
 }

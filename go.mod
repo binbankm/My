@@ -1,16 +1,16 @@
 module github.com/binbankm/My
 
-go 1.21
+go 1.24.0
+
+toolchain go1.24.13
 
 require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/golang-jwt/jwt/v5 v5.2.0
 	github.com/shirou/gopsutil/v3 v3.23.12
-	github.com/docker/docker v24.0.7+incompatible
-	github.com/docker/go-connections v0.4.0
-	gorm.io/gorm v1.25.5
-	gorm.io/driver/sqlite v1.5.4
 	golang.org/x/crypto v0.17.0
+	gorm.io/driver/sqlite v1.5.4
+	gorm.io/gorm v1.25.5
 )
 
 require (

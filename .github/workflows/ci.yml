@@ -54,4 +54,4 @@ jobs:
 
       - name: Build backend
         run: |
-          go build -v cmd/server/main.go
+          go build -v main.go
