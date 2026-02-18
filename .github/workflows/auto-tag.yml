@@ -1,5 +1,5 @@
 ---
-name: Auto Tag
+name: Auto Tag and Release
 
 on:
   push:
@@ -14,6 +14,9 @@ jobs:
   auto-tag:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    outputs:
+      new_version: ${{ steps.bump.outputs.new_version }}
+      version_created: ${{ steps.check_version.outputs.version_created }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -47,9 +50,121 @@ jobs:
           echo "New version: $NEW_VERSION"
 
       - name: Create and push tag
+        id: check_version
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           NEW_VERSION="${{ steps.bump.outputs.new_version }}"
           git tag -a "$NEW_VERSION" -m "Release $NEW_VERSION"
           git push origin "$NEW_VERSION"
+          echo "version_created=true" >> $GITHUB_OUTPUT
+
+  build:
+    name: Build for ${{ matrix.os }}-${{ matrix.arch }}
+    needs: auto-tag
+    if: needs.auto-tag.outputs.version_created == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - os: linux
+            arch: amd64
+          - os: linux
+            arch: arm64
+          - os: darwin
+            arch: amd64
+          - os: darwin
+            arch: arm64
+          - os: windows
+            arch: amd64
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.auto-tag.outputs.new_version }}
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          npm install
+
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm run build
+
+      - name: Build binary
+        env:
+          GOOS: ${{ matrix.os }}
+          GOARCH: ${{ matrix.arch }}
+        run: |
+          if [ "${{ matrix.os }}" = "windows" ]; then
+            OUTPUT="serverpanel-${{ matrix.os }}-${{ matrix.arch }}.exe"
+            go build -o "$OUTPUT" main.go
+          else
+            OUTPUT="serverpanel-${{ matrix.os }}-${{ matrix.arch }}"
+            go build -o "$OUTPUT" main.go
+          fi
+
+      - name: Create package
+        run: |
+          mkdir -p release
+          if [ "${{ matrix.os }}" = "windows" ]; then
+            EXE="serverpanel-${{ matrix.os }}-${{ matrix.arch }}.exe"
+            ZIP="release/serverpanel-${{ matrix.os }}-${{ matrix.arch }}.zip"
+            zip -r "$ZIP" "$EXE"
+          else
+            BIN="serverpanel-${{ matrix.os }}-${{ matrix.arch }}"
+            TAR="release/$BIN.tar.gz"
+            cp scripts/install.sh .
+            cp scripts/uninstall.sh .
+            chmod +x install.sh uninstall.sh
+            tar -czf "$TAR" "$BIN" install.sh uninstall.sh README.md
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: serverpanel-${{ matrix.os }}-${{ matrix.arch }}
+          path: release/*
+
+  release:
+    name: Create Release
+    needs: [auto-tag, build]
+    if: needs.auto-tag.outputs.version_created == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.auto-tag.outputs.new_version }}
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Display structure of downloaded files
+        run: ls -R artifacts
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.auto-tag.outputs.new_version }}
+          files: artifacts/**/*
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
