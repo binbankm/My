@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/binbankm/My/internal/api"
 	"github.com/binbankm/My/internal/middleware"
@@ -29,6 +30,29 @@ func main() {
 	}
 
 	r := gin.Default()
+
+	// Configure trusted proxies
+	// In production, set TRUSTED_PROXIES env var to your proxy IPs
+	// For direct access (no proxy), use an empty list
+	trustedProxies := os.Getenv("TRUSTED_PROXIES")
+	if trustedProxies != "" {
+		// Parse comma-separated list of proxy IPs
+		proxies := []string{}
+		for _, proxy := range strings.Split(trustedProxies, ",") {
+			proxy = strings.TrimSpace(proxy)
+			if proxy != "" {
+				proxies = append(proxies, proxy)
+			}
+		}
+		if err := r.SetTrustedProxies(proxies); err != nil {
+			log.Printf("Warning: Failed to set trusted proxies: %v", err)
+		}
+	} else {
+		// No trusted proxies - direct access
+		if err := r.SetTrustedProxies(nil); err != nil {
+			log.Printf("Warning: Failed to set trusted proxies: %v", err)
+		}
+	}
 
 	// CORS middleware
 	r.Use(middleware.CORS())
