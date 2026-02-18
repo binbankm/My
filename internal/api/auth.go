@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/binbankm/My/internal/model"
 	"github.com/binbankm/My/internal/util"
@@ -25,6 +26,11 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	// Trim whitespace from username and password to prevent login failures
+	// due to accidental spaces
+	req.Username = strings.TrimSpace(req.Username)
+	req.Password = strings.TrimSpace(req.Password)
 
 	var user model.User
 	if err := model.DB.Where("username = ?", req.Username).First(&user).Error; err != nil {
