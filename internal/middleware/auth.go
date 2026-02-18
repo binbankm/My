@@ -25,7 +25,9 @@ func CORS() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		origin := c.GetHeader("Origin")
 		
-		// If no Origin header, this is a same-origin request, allow it
+		// If no Origin header, this is a same-origin request or a non-browser client
+		// Same-origin requests don't need CORS headers
+		// Non-browser clients (curl, postman, etc.) also typically don't send Origin
 		if origin == "" {
 			c.Next()
 			return
@@ -55,12 +57,9 @@ func CORS() gin.HandlerFunc {
 			// If the origin matches where we're serving from, allow it
 			if origin == requestOrigin {
 				c.Writer.Header().Set("Access-Control-Allow-Origin", origin)
-			} else {
-				// Origin not allowed - do not set CORS headers
-				// This will cause the browser to block the request
-				c.AbortWithStatus(http.StatusForbidden)
-				return
 			}
+			// If origin doesn't match, we don't set CORS headers
+			// The browser will enforce CORS policy and block the response
 		}
 		
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")

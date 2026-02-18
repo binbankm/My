@@ -90,7 +90,8 @@ Request arrives
      -H "Origin: http://evil-site.com" \
      -H "Content-Type: application/json" \
      -d '{"username":"admin","password":"admin123"}'
-   # Result: HTTP 403 Forbidden
+   # Result: HTTP 200 OK, but no CORS headers
+   # Browser will block the response due to missing CORS headers
    ```
 
 4. ✅ **OPTIONS preflight request**
@@ -188,8 +189,7 @@ This fix aligns ServerPanel with 1Panel's approach:
 
 ### What's Blocked:
 
-- ❌ Unauthorized origins in production mode
-- ❌ Requests without proper CORS headers from external domains
+- ❌ Cross-origin requests from unauthorized domains (browsers enforce CORS policy by blocking the response when CORS headers are missing)
 
 ### Important Notes:
 
