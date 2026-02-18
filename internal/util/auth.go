@@ -60,7 +60,8 @@ func ParseToken(tokenString string) (*Claims, error) {
 
 // HashPassword hashes a password using bcrypt
 func HashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 10)
+	// Use cost of 12 for better security (recommended for production)
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 12)
 	return string(bytes), err
 }
 

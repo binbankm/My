@@ -29,7 +29,8 @@ func CORS() gin.HandlerFunc {
 		if origin != "" && contains(strings.Split(allowedOrigins, ","), origin) {
 			c.Writer.Header().Set("Access-Control-Allow-Origin", origin)
 		} else if os.Getenv("GIN_MODE") != "release" {
-			// Allow all in development mode only
+			// DEVELOPMENT ONLY: Allow all origins in dev mode
+			// WARNING: This should NEVER be used in production - set GIN_MODE=release
 			c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		}
 		

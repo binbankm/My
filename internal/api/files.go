@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -37,12 +38,12 @@ func validatePath(requestPath string) (string, error) {
 	// Make absolute
 	absPath, err := filepath.Abs(cleanPath)
 	if err != nil {
-		absPath = cleanPath
+		return "", err
 	}
 	
 	// Check if path is within base path
 	if !strings.HasPrefix(absPath, cleanBase) {
-		absPath = filepath.Join(cleanBase, filepath.Base(cleanPath))
+		return "", fmt.Errorf("access denied: path outside allowed directory")
 	}
 	
 	return absPath, nil
