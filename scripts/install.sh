@@ -37,7 +37,9 @@ mkdir -p $INSTALL_DIR
 # Stop service if it's running (to avoid "Text file busy" error during re-installation)
 if systemctl is-active --quiet serverpanel 2>/dev/null; then
   echo "Stopping existing ServerPanel service..."
-  systemctl stop serverpanel
+  if ! systemctl stop serverpanel; then
+    echo "Warning: Failed to stop serverpanel service, installation may fail"
+  fi
 fi
 
 # Copy binary
