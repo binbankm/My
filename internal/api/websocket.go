@@ -64,8 +64,8 @@ func (h *WebSocketHub) Run() {
 				select {
 				case client.Send <- message:
 				default:
-					close(client.Send)
-					delete(h.clients, client)
+					// Client's send buffer is full, skip this message
+					// Client will be cleaned up by unregister
 				}
 			}
 			h.mutex.RUnlock()

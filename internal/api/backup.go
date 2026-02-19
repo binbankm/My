@@ -377,13 +377,14 @@ func createDatabaseBackup(dbConfig, destination string) error {
 	var cmd *exec.Cmd
 
 	if dbType == "mysql" {
+		// Use MYSQL_PWD environment variable instead of command-line argument
 		cmd = exec.Command("mysqldump",
 			"-h", host,
 			"-P", port,
 			"-u", user,
-			fmt.Sprintf("--password=%s", password),
 			database,
 		)
+		cmd.Env = append(os.Environ(), fmt.Sprintf("MYSQL_PWD=%s", password))
 	} else if dbType == "postgresql" {
 		cmd = exec.Command("pg_dump",
 			"-h", host,

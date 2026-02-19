@@ -419,3 +419,311 @@ The API does not currently implement rate limiting, but this may be added in fut
 ## Versioning
 
 The current API version is v1. The version is not included in the URL path. Future versions will be clearly documented with migration guides.
+
+## Docker Management Endpoints
+
+### GET /docker/containers
+List all Docker containers.
+
+**Response:** Array of container objects
+
+### GET /docker/containers/:id
+Get details of a specific container.
+
+### GET /docker/containers/:id/logs
+Get logs from a container.
+
+### GET /docker/containers/:id/stats
+Get real-time statistics from a container.
+
+### POST /docker/containers/:id/start
+Start a container.
+
+### POST /docker/containers/:id/stop
+Stop a container.
+
+### POST /docker/containers/:id/restart
+Restart a container.
+
+### DELETE /docker/containers/:id
+Delete a container.
+
+### GET /docker/images
+List all Docker images.
+
+### DELETE /docker/images/:id
+Delete a Docker image.
+
+## Database Management Endpoints
+
+### GET /database
+List all database connections.
+
+### POST /database
+Create a new database connection.
+
+**Request Body:**
+```json
+{
+  "name": "mydb",
+  "type": "mysql",
+  "host": "localhost",
+  "port": 3306,
+  "username": "root",
+  "password": "password",
+  "database": "mydb"
+}
+```
+
+### GET /database/:id
+Get a specific database connection.
+
+### DELETE /database/:id
+Delete a database connection.
+
+### POST /database/:id/test
+Test a database connection.
+
+### POST /database/:id/query
+Execute a SQL query.
+
+**Request Body:**
+```json
+{
+  "query": "SELECT * FROM users"
+}
+```
+
+### GET /database/:id/tables
+List all tables in a database.
+
+## Cron Job Management Endpoints
+
+### GET /cron
+List all cron jobs.
+
+### POST /cron
+Create a new cron job.
+
+**Request Body:**
+```json
+{
+  "schedule": "0 2 * * *",
+  "command": "/path/to/script.sh",
+  "comment": "Daily backup"
+}
+```
+
+### GET /cron/:id
+Get a specific cron job.
+
+### PUT /cron/:id
+Update a cron job.
+
+### DELETE /cron/:id
+Delete a cron job.
+
+## Log Viewer Endpoints
+
+### GET /logs/files
+List all available log files.
+
+### GET /logs/read
+Read content from a log file.
+
+**Query Parameters:**
+- `path`: Path to log file (required)
+- `lines`: Number of lines to read (default: 100)
+- `tail`: Read from end of file (default: true)
+- `filter`: Filter by keyword
+
+### GET /logs/search
+Search across multiple log files.
+
+**Query Parameters:**
+- `query`: Search query (required)
+- `dir`: Directory to search (default: /var/log)
+
+### GET /logs/system
+Get system logs using journalctl.
+
+**Query Parameters:**
+- `lines`: Number of lines (default: 100)
+- `unit`: Systemd unit name
+- `since`: Time range
+
+### GET /logs/download
+Download a log file.
+
+**Query Parameters:**
+- `path`: Path to log file (required)
+
+### POST /logs/clear
+Clear a log file.
+
+**Request Body:**
+```json
+{
+  "path": "/var/log/myapp.log"
+}
+```
+
+### GET /logs/stats
+Get log file statistics.
+
+## Nginx Management Endpoints
+
+### GET /nginx/sites
+List all Nginx sites.
+
+### GET /nginx/sites/:name
+Get a specific Nginx site configuration.
+
+### POST /nginx/sites
+Create a new Nginx site.
+
+**Request Body:**
+```json
+{
+  "name": "example.com",
+  "serverName": "example.com",
+  "port": "80",
+  "root": "/var/www/example",
+  "content": "server { ... }"
+}
+```
+
+### PUT /nginx/sites/:name
+Update an Nginx site configuration.
+
+### DELETE /nginx/sites/:name
+Delete an Nginx site.
+
+### POST /nginx/sites/:name/enable
+Enable an Nginx site.
+
+### POST /nginx/sites/:name/disable
+Disable an Nginx site.
+
+### POST /nginx/test
+Test Nginx configuration.
+
+### POST /nginx/reload
+Reload Nginx.
+
+### GET /nginx/status
+Get Nginx status.
+
+## Backup and Restore Endpoints
+
+### GET /backup
+List all backups.
+
+### POST /backup
+Create a new backup.
+
+**Request Body:**
+```json
+{
+  "type": "file",
+  "name": "mybackup",
+  "source": "/path/to/data",
+  "description": "Important data backup"
+}
+```
+
+### GET /backup/:id/download
+Download a backup file.
+
+### DELETE /backup/:id
+Delete a backup.
+
+### POST /backup/:id/restore
+Restore from a backup.
+
+**Request Body:**
+```json
+{
+  "destination": "/path/to/restore"
+}
+```
+
+### GET /backup/stats
+Get backup statistics.
+
+## User Management Endpoints
+
+### GET /users
+List all users.
+
+### GET /users/:id
+Get a specific user.
+
+### POST /users
+Create a new user.
+
+**Request Body:**
+```json
+{
+  "username": "newuser",
+  "password": "password",
+  "email": "user@example.com",
+  "isAdmin": false,
+  "roleId": 2
+}
+```
+
+### PUT /users/:id
+Update a user.
+
+### DELETE /users/:id
+Delete a user.
+
+## Role Management Endpoints
+
+### GET /roles
+List all roles.
+
+### GET /roles/:id
+Get a specific role.
+
+### POST /roles
+Create a new role.
+
+**Request Body:**
+```json
+{
+  "name": "developer",
+  "description": "Developer role",
+  "permissionIds": [1, 3, 5, 8]
+}
+```
+
+### PUT /roles/:id
+Update a role.
+
+### DELETE /roles/:id
+Delete a role.
+
+## Permission Endpoints
+
+### GET /permissions
+List all permissions.
+
+## WebSocket Endpoint
+
+### GET /ws
+Connect to WebSocket for real-time updates.
+
+WebSocket messages are in JSON format:
+```json
+{
+  "type": "system_stats",
+  "data": {
+    "cpu": {...},
+    "memory": {...}
+  },
+  "timestamp": 1234567890
+}
+```
+

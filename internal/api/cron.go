@@ -316,9 +316,9 @@ func isValidCronSchedule(schedule string) bool {
 		return false
 	}
 	
-	// Basic validation - could be more thorough
+	// Basic validation - Unix cron format
 	for _, part := range parts {
-		if part != "*" && part != "?" {
+		if part != "*" {
 			// Check if it's a number, range, list, or step
 			if !strings.ContainsAny(part, "0123456789,-/") {
 				return false
