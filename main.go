@@ -24,6 +24,9 @@ func main() {
 		log.Fatalf("Failed to initialize database: %v", err)
 	}
 
+	// Initialize WebSocket
+	api.InitWebSocket()
+
 	// Set gin mode
 	if os.Getenv("GIN_MODE") == "" {
 		gin.SetMode(gin.ReleaseMode)
@@ -84,6 +87,8 @@ func main() {
 			{
 				docker.GET("/containers", api.ListContainers)
 				docker.GET("/containers/:id", api.GetContainer)
+				docker.GET("/containers/:id/logs", api.GetContainerLogs)
+				docker.GET("/containers/:id/stats", api.GetContainerStats)
 				docker.POST("/containers/:id/start", api.StartContainer)
 				docker.POST("/containers/:id/stop", api.StopContainer)
 				docker.POST("/containers/:id/restart", api.RestartContainer)
@@ -108,8 +113,86 @@ func main() {
 			{
 				database.GET("", api.ListDatabases)
 				database.POST("", api.CreateDatabase)
-				database.DELETE("/:name", api.DeleteDatabase)
+				database.GET("/:id", api.GetDatabase)
+				database.DELETE("/:id", api.DeleteDatabase)
+				database.POST("/:id/test", api.TestDatabase)
+				database.POST("/:id/query", api.ExecuteQuery)
+				database.GET("/:id/tables", api.ListDatabaseTables)
 			}
+
+			// Cron job management
+			cron := protected.Group("/cron")
+			{
+				cron.GET("", api.ListCronJobs)
+				cron.POST("", api.CreateCronJob)
+				cron.GET("/:id", api.GetCronJob)
+				cron.PUT("/:id", api.UpdateCronJob)
+				cron.DELETE("/:id", api.DeleteCronJob)
+			}
+
+			// Log viewer
+			logs := protected.Group("/logs")
+			{
+				logs.GET("/files", api.ListLogFiles)
+				logs.GET("/read", api.ReadLogFile)
+				logs.GET("/search", api.SearchLogs)
+				logs.GET("/system", api.GetSystemLogs)
+				logs.GET("/download", api.DownloadLogFile)
+				logs.POST("/clear", api.ClearLogFile)
+				logs.GET("/stats", api.GetLogStats)
+			}
+
+			// Nginx management
+			nginx := protected.Group("/nginx")
+			{
+				nginx.GET("/sites", api.ListNginxSites)
+				nginx.GET("/sites/:name", api.GetNginxSite)
+				nginx.POST("/sites", api.CreateNginxSite)
+				nginx.PUT("/sites/:name", api.UpdateNginxSite)
+				nginx.DELETE("/sites/:name", api.DeleteNginxSite)
+				nginx.POST("/sites/:name/enable", api.EnableNginxSite)
+				nginx.POST("/sites/:name/disable", api.DisableNginxSite)
+				nginx.POST("/test", api.TestNginxConfig)
+				nginx.POST("/reload", api.ReloadNginx)
+				nginx.GET("/status", api.GetNginxStatus)
+			}
+
+			// Backup and restore
+			backup := protected.Group("/backup")
+			{
+				backup.GET("", api.ListBackups)
+				backup.POST("", api.CreateBackup)
+				backup.GET("/:id/download", api.DownloadBackup)
+				backup.DELETE("/:id", api.DeleteBackup)
+				backup.POST("/:id/restore", api.RestoreBackup)
+				backup.GET("/stats", api.GetBackupStats)
+			}
+
+			// User management
+			users := protected.Group("/users")
+			{
+				users.GET("", api.ListUsers)
+				users.GET("/:id", api.GetUser)
+				users.POST("", api.CreateUser)
+				users.PUT("/:id", api.UpdateUser)
+				users.DELETE("/:id", api.DeleteUser)
+			}
+
+			// Role management
+			roles := protected.Group("/roles")
+			{
+				roles.GET("", api.ListRoles)
+				roles.GET("/:id", api.GetRole)
+				roles.POST("", api.CreateRole)
+				roles.PUT("/:id", api.UpdateRole)
+				roles.DELETE("/:id", api.DeleteRole)
+			}
+
+			// Permissions
+			protected.GET("/permissions", api.ListPermissions)
+
+			// WebSocket for real-time updates
+			protected.GET("/ws", api.HandleWebSocket)
 
 			// Settings
 			settings := protected.Group("/settings")
