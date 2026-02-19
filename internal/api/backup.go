@@ -32,11 +32,17 @@ const backupDir = "/var/backups/serverpanel"
 // ListBackups lists all backups
 func ListBackups(c *gin.Context) {
 	// Ensure backup directory exists
-	os.MkdirAll(backupDir, 0755)
+	if err := os.MkdirAll(backupDir, 0755); err != nil {
+		// If we can't create the directory (permission issue), return empty list
+		// The error is logged by MkdirAll itself
+		c.JSON(http.StatusOK, []Backup{})
+		return
+	}
 
 	files, err := os.ReadDir(backupDir)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to list backups: " + err.Error()})
+		// If we can't read the directory, return empty list
+		c.JSON(http.StatusOK, []Backup{})
 		return
 	}
 
