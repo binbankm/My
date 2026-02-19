@@ -35,14 +35,14 @@ func HandleTerminalWebSocket(c *gin.Context) {
 	// Validate token from query parameter (WebSocket can't send Authorization header during upgrade)
 	token := c.Query("token")
 	if token == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Token required"})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Token required"})
 		return
 	}
 
 	// Parse and validate token
 	_, err := util.ParseToken(token)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
 		return
 	}
 

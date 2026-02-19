@@ -53,8 +53,15 @@ func validatePath(requestPath string) (string, error) {
 	// Ensure the path is absolute and clean
 	fullPath = filepath.Clean(fullPath)
 	
-	// Check if path is within base path
-	if !strings.HasPrefix(fullPath, cleanBase) {
+	// Check if path is within base path using filepath.Rel to prevent path traversal
+	// This is more secure than a simple prefix check
+	relPath, err := filepath.Rel(cleanBase, fullPath)
+	if err != nil {
+		return "", fmt.Errorf("invalid path")
+	}
+	
+	// If the relative path starts with "..", it's outside the base directory
+	if strings.HasPrefix(relPath, "..") {
 		return "", fmt.Errorf("access denied: path outside allowed directory")
 	}
 	
