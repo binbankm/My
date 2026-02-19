@@ -18,11 +18,13 @@ type FileInfo struct {
 	ModTime string `json:"modTime"`
 }
 
-// getAllowedBasePath returns the allowed base path for file operations
+// getAllowedBasePath returns the allowed base path for file operations.
+// Defaults to "/" to allow full filesystem access (admin panel usage).
+// Set FILE_MANAGER_BASE_PATH env var to restrict access to a specific directory.
 func getAllowedBasePath() string {
 	basePath := os.Getenv("FILE_MANAGER_BASE_PATH")
 	if basePath == "" {
-		basePath = "/home" // Default to /home directory
+		basePath = "/" // Default to root directory for full filesystem access
 	}
 	return basePath
 }
