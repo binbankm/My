@@ -194,6 +194,9 @@ func main() {
 			// WebSocket for real-time updates
 			protected.GET("/ws", api.HandleWebSocket)
 
+			// Terminal WebSocket
+			protected.GET("/terminal/ws", api.HandleTerminalWebSocket)
+
 			// Settings
 			settings := protected.Group("/settings")
 			{

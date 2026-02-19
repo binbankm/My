@@ -76,6 +76,14 @@
               Database
             </router-link>
             <router-link
+              to="/terminal"
+              class="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors"
+              :class="$route.path === '/terminal' ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'"
+            >
+              <Terminal class="h-5 w-5 mr-3" />
+              Terminal
+            </router-link>
+            <router-link
               to="/settings"
               class="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors"
               :class="$route.path === '/settings' ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'"
@@ -155,6 +163,15 @@
               Database
             </router-link>
             <router-link
+              to="/terminal"
+              @click="mobileMenuOpen = false"
+              class="flex items-center px-3 py-2 text-base font-medium rounded-md transition-colors"
+              :class="$route.path === '/terminal' ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'"
+            >
+              <Terminal class="h-5 w-5 mr-3" />
+              Terminal
+            </router-link>
+            <router-link
               to="/settings"
               @click="mobileMenuOpen = false"
               class="flex items-center px-3 py-2 text-base font-medium rounded-md transition-colors"
@@ -191,7 +208,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../store/auth'
 import { Sheet } from '../components/ui'
-import { Menu, LayoutDashboard, Container, FolderOpen, Database, Settings, LogOut } from 'lucide-vue-next'
+import { Menu, LayoutDashboard, Container, FolderOpen, Database, Terminal, Settings, LogOut } from 'lucide-vue-next'
 
 const router = useRouter()
 const authStore = useAuthStore()
