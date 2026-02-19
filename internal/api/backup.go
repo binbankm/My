@@ -34,6 +34,7 @@ func ListBackups(c *gin.Context) {
 	// Ensure backup directory exists
 	if err := os.MkdirAll(backupDir, 0755); err != nil {
 		// If we can't create the directory (permission issue), return empty list
+		// The error is logged by MkdirAll itself
 		c.JSON(http.StatusOK, []Backup{})
 		return
 	}

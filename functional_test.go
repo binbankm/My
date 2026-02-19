@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -131,7 +132,7 @@ func TestDatabaseManagement(t *testing.T) {
 			var result map[string]interface{}
 			json.NewDecoder(resp.Body).Decode(&result)
 			if id, ok := result["id"].(float64); ok {
-				dbID = string(rune(int(id)))
+				dbID = fmt.Sprintf("%d", int(id))
 			}
 		}
 	})
@@ -238,7 +239,7 @@ func TestUserManagement(t *testing.T) {
 			json.NewDecoder(resp.Body).Decode(&result)
 			if user, ok := result["user"].(map[string]interface{}); ok {
 				if id, ok := user["id"].(float64); ok {
-					userID = string(rune(int(id)))
+					userID = fmt.Sprintf("%d", int(id))
 				}
 			}
 		}

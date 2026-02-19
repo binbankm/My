@@ -174,7 +174,7 @@ func TestSecurityCommandInjection(t *testing.T) {
 
 // Test Security: Rate Limiting on Login
 func TestSecurityLoginRateLimit(t *testing.T) {
-	t.Skip("Rate limiting not implemented - feature request for future")
+	t.Skip("Rate limiting not implemented - feature request for the future")
 	
 	// This test would verify that excessive login attempts are blocked
 	// Currently skipped as rate limiting may not be implemented
