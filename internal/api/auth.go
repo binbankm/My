@@ -27,12 +27,13 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	// Trim whitespace from username to prevent login failures due to accidental spaces
+	// Trim whitespace and normalize username to lowercase
+	// This makes login case-insensitive and prevents failures from accidental spaces
 	// Note: We don't trim password as users may intentionally use spaces in their password
-	req.Username = strings.TrimSpace(req.Username)
+	req.Username = strings.ToLower(strings.TrimSpace(req.Username))
 
 	var user model.User
-	if err := model.DB.Where("username = ?", req.Username).First(&user).Error; err != nil {
+	if err := model.DB.Where("LOWER(username) = ?", req.Username).First(&user).Error; err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
 		return
 	}

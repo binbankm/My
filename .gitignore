@@ -8,6 +8,7 @@ bin/
 dist/
 build/
 main
+serverpanel
 
 # Go
 *.o
