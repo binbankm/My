@@ -4,11 +4,9 @@ import (
 	"encoding/json"
 	"io"
 	"log"
-	"net/http"
 	"os"
 	"os/exec"
 	"sync"
-	"time"
 
 	"github.com/creack/pty"
 	"github.com/gin-gonic/gin"
@@ -22,11 +20,6 @@ type terminalSession struct {
 	mu     sync.Mutex
 	closed bool
 }
-
-var (
-	sessions   = make(map[string]*terminalSession)
-	sessionsMu sync.RWMutex
-)
 
 type TerminalMessage struct {
 	Type string `json:"type"` // input, resize, ping
@@ -188,20 +181,4 @@ func (s *terminalSession) cleanup() {
 	if s.conn != nil {
 		s.conn.Close()
 	}
-}
-
-// ListTerminalSessions returns active terminal sessions (for future multi-session support)
-func ListTerminalSessions(c *gin.Context) {
-	sessionsMu.RLock()
-	defer sessionsMu.RUnlock()
-
-	sessionList := make([]map[string]interface{}, 0)
-	for id := range sessions {
-		sessionList = append(sessionList, map[string]interface{}{
-			"id":        id,
-			"createdAt": time.Now(), // In real implementation, track creation time
-		})
-	}
-
-	c.JSON(http.StatusOK, sessionList)
 }

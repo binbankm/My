@@ -300,7 +300,7 @@ const createFileOrFolder = async () => {
 const editFile = async (file) => {
   try {
     editingFile.value = file
-    // Try to fetch file content - we need to add this to the API
+    // Fetch file content using the download endpoint
     const response = await fetch(api.downloadFile(file.path))
     const content = await response.text()
     fileContent.value = content
@@ -382,6 +382,18 @@ const isEditableFile = (name) => {
 }
 
 const getFileIcon = (name) => {
+  // Check if file has an extension
+  if (!name.includes('.')) {
+    // Special cases for files without extensions
+    const specialFiles = {
+      'Dockerfile': '🐳',
+      'Makefile': '🔨',
+      'README': '📖',
+      'LICENSE': '⚖️',
+    }
+    return specialFiles[name] || '📄'
+  }
+  
   const ext = name.split('.').pop()?.toLowerCase()
   const iconMap = {
     js: '📜', ts: '📘', vue: '💚', html: '🌐', css: '🎨',
