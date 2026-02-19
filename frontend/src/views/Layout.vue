@@ -152,13 +152,12 @@
 
 <script setup>
 import { computed, onMounted, ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { useAuthStore } from '../store/auth'
 import { Sheet } from '../components/ui'
 import { Menu, LayoutDashboard, Container, FolderOpen, Database, Settings, LogOut } from 'lucide-vue-next'
 
 const router = useRouter()
-const route = useRoute()
 const authStore = useAuthStore()
 
 const user = computed(() => authStore.user)
