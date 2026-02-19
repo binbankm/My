@@ -84,6 +84,46 @@
               Terminal
             </router-link>
             <router-link
+              to="/cron"
+              class="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors"
+              :class="$route.path === '/cron' ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'"
+            >
+              <Clock class="h-5 w-5 mr-3" />
+              Cron Jobs
+            </router-link>
+            <router-link
+              to="/logs"
+              class="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors"
+              :class="$route.path === '/logs' ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'"
+            >
+              <FileText class="h-5 w-5 mr-3" />
+              Logs
+            </router-link>
+            <router-link
+              to="/nginx"
+              class="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors"
+              :class="$route.path === '/nginx' ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'"
+            >
+              <Server class="h-5 w-5 mr-3" />
+              Nginx
+            </router-link>
+            <router-link
+              to="/backups"
+              class="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors"
+              :class="$route.path === '/backups' ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'"
+            >
+              <Archive class="h-5 w-5 mr-3" />
+              Backups
+            </router-link>
+            <router-link
+              to="/users"
+              class="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors"
+              :class="$route.path === '/users' ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'"
+            >
+              <Users class="h-5 w-5 mr-3" />
+              Users
+            </router-link>
+            <router-link
               to="/settings"
               class="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors"
               :class="$route.path === '/settings' ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'"
@@ -172,6 +212,51 @@
               Terminal
             </router-link>
             <router-link
+              to="/cron"
+              @click="mobileMenuOpen = false"
+              class="flex items-center px-3 py-2 text-base font-medium rounded-md transition-colors"
+              :class="$route.path === '/cron' ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'"
+            >
+              <Clock class="h-5 w-5 mr-3" />
+              Cron Jobs
+            </router-link>
+            <router-link
+              to="/logs"
+              @click="mobileMenuOpen = false"
+              class="flex items-center px-3 py-2 text-base font-medium rounded-md transition-colors"
+              :class="$route.path === '/logs' ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'"
+            >
+              <FileText class="h-5 w-5 mr-3" />
+              Logs
+            </router-link>
+            <router-link
+              to="/nginx"
+              @click="mobileMenuOpen = false"
+              class="flex items-center px-3 py-2 text-base font-medium rounded-md transition-colors"
+              :class="$route.path === '/nginx' ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'"
+            >
+              <Server class="h-5 w-5 mr-3" />
+              Nginx
+            </router-link>
+            <router-link
+              to="/backups"
+              @click="mobileMenuOpen = false"
+              class="flex items-center px-3 py-2 text-base font-medium rounded-md transition-colors"
+              :class="$route.path === '/backups' ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'"
+            >
+              <Archive class="h-5 w-5 mr-3" />
+              Backups
+            </router-link>
+            <router-link
+              to="/users"
+              @click="mobileMenuOpen = false"
+              class="flex items-center px-3 py-2 text-base font-medium rounded-md transition-colors"
+              :class="$route.path === '/users' ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'"
+            >
+              <Users class="h-5 w-5 mr-3" />
+              Users
+            </router-link>
+            <router-link
               to="/settings"
               @click="mobileMenuOpen = false"
               class="flex items-center px-3 py-2 text-base font-medium rounded-md transition-colors"
@@ -208,7 +293,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../store/auth'
 import { Sheet } from '../components/ui'
-import { Menu, LayoutDashboard, Container, FolderOpen, Database, Terminal, Settings, LogOut } from 'lucide-vue-next'
+import { Menu, LayoutDashboard, Container, FolderOpen, Database, Terminal, Settings, LogOut, Clock, FileText, Server, Archive, Users } from 'lucide-vue-next'
 
 const router = useRouter()
 const authStore = useAuthStore()

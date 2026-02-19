@@ -40,6 +40,31 @@ const router = createRouter({
           component: () => import('../views/Terminal.vue'),
         },
         {
+          path: 'cron',
+          name: 'Cron',
+          component: () => import('../views/Cron.vue'),
+        },
+        {
+          path: 'logs',
+          name: 'Logs',
+          component: () => import('../views/Logs.vue'),
+        },
+        {
+          path: 'nginx',
+          name: 'Nginx',
+          component: () => import('../views/Nginx.vue'),
+        },
+        {
+          path: 'backups',
+          name: 'Backups',
+          component: () => import('../views/Backups.vue'),
+        },
+        {
+          path: 'users',
+          name: 'Users',
+          component: () => import('../views/Users.vue'),
+        },
+        {
           path: 'settings',
           name: 'Settings',
           component: () => import('../views/Settings.vue'),
