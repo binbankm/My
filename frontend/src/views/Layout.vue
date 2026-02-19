@@ -32,7 +32,7 @@
     </nav>
 
     <!-- Desktop Layout with Sidebar -->
-    <div class="flex h-screen">
+    <div class="flex md:h-screen">
       <!-- Desktop Sidebar -->
       <aside class="hidden md:flex md:flex-shrink-0">
         <div class="flex flex-col w-64 bg-white border-r border-gray-200">
