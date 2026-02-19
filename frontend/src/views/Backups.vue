@@ -60,7 +60,7 @@
           </div>
           <div class="flex gap-2">
             <a
-              :href="api.downloadBackup(backup.id)"
+              :href="getDownloadUrl(backup.id)"
               class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded hover:bg-green-200"
               download
             >
@@ -263,6 +263,10 @@ const formatSize = (bytes) => {
 const formatDate = (dateString) => {
   if (!dateString) return 'Never'
   return new Date(dateString).toLocaleString()
+}
+
+const getDownloadUrl = (id) => {
+  return `/api/backup/${id}/download`
 }
 
 onMounted(() => {

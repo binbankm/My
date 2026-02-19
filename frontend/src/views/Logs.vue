@@ -98,7 +98,7 @@
           <!-- Log Actions -->
           <div v-if="selectedFile" class="mb-4 flex gap-2 text-sm">
             <a
-              :href="api.downloadLogFile(selectedFile.path)"
+              :href="getDownloadUrl(selectedFile.path)"
               class="px-3 py-1 bg-green-100 text-green-700 rounded hover:bg-green-200"
               download
             >
@@ -243,6 +243,10 @@ const formatSize = (bytes) => {
   const sizes = ['B', 'KB', 'MB', 'GB']
   const i = Math.floor(Math.log(bytes) / Math.log(k))
   return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i]
+}
+
+const getDownloadUrl = (path) => {
+  return `/api/logs/download?path=${encodeURIComponent(path)}`
 }
 
 onMounted(() => {
