@@ -110,8 +110,8 @@ func TestGetUserInfo(t *testing.T) {
 	w := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(w)
 
-	// Simulate authenticated user
-	c.Set("user_id", uint(1))
+	// Simulate authenticated user - use the correct key name
+	c.Set("userID", uint(1))
 	c.Request, _ = http.NewRequest("GET", "/api/auth/info", nil)
 
 	GetUserInfo(c)
@@ -123,14 +123,16 @@ func TestGetUserInfo(t *testing.T) {
 	var response map[string]interface{}
 	if err := json.Unmarshal(w.Body.Bytes(), &response); err != nil {
 		t.Errorf("Failed to parse response: %v", err)
+		return
 	}
 
-	if user, ok := response["user"].(map[string]interface{}); ok {
-		if user["username"] != "admin" {
-			t.Errorf("Expected username 'admin', got %v", user["username"])
+	// Response is the user object directly
+	if username, ok := response["username"].(string); ok {
+		if username != "admin" {
+			t.Errorf("Expected username 'admin', got %v", username)
 		}
 	} else {
-		t.Error("Expected user in response")
+		t.Error("Expected username in response")
 	}
 }
 
