@@ -31,22 +31,34 @@ func getAllowedBasePath() string {
 func validatePath(requestPath string) (string, error) {
 	basePath := getAllowedBasePath()
 	
-	// Clean the paths
-	cleanPath := filepath.Clean(requestPath)
+	// Clean the base path
 	cleanBase := filepath.Clean(basePath)
 	
-	// Make absolute
-	absPath, err := filepath.Abs(cleanPath)
-	if err != nil {
-		return "", err
+	// If request path is empty or just "/", use base path
+	if requestPath == "" || requestPath == "/" {
+		return cleanBase, nil
 	}
 	
+	// Clean the requested path
+	cleanPath := filepath.Clean(requestPath)
+	
+	// If the path is not absolute, join it with base path
+	var fullPath string
+	if filepath.IsAbs(cleanPath) {
+		fullPath = cleanPath
+	} else {
+		fullPath = filepath.Join(cleanBase, cleanPath)
+	}
+	
+	// Ensure the path is absolute and clean
+	fullPath = filepath.Clean(fullPath)
+	
 	// Check if path is within base path
-	if !strings.HasPrefix(absPath, cleanBase) {
+	if !strings.HasPrefix(fullPath, cleanBase) {
 		return "", fmt.Errorf("access denied: path outside allowed directory")
 	}
 	
-	return absPath, nil
+	return fullPath, nil
 }
 
 // ListFiles lists files in a directory

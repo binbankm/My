@@ -4,10 +4,12 @@ import (
 	"encoding/json"
 	"io"
 	"log"
+	"net/http"
 	"os"
 	"os/exec"
 	"sync"
 
+	"github.com/binbankm/My/internal/util"
 	"github.com/creack/pty"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
@@ -30,6 +32,21 @@ type TerminalMessage struct {
 
 // HandleTerminalWebSocket handles WebSocket connections for terminal sessions
 func HandleTerminalWebSocket(c *gin.Context) {
+	// Validate token from query parameter (WebSocket can't send Authorization header during upgrade)
+	token := c.Query("token")
+	if token == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Token required"})
+		return
+	}
+
+	// Parse and validate token
+	_, err := util.ParseToken(token)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+		return
+	}
+
+	// Upgrade to WebSocket
 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
 		log.Printf("Failed to upgrade connection: %v", err)

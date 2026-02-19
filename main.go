@@ -194,9 +194,6 @@ func main() {
 			// WebSocket for real-time updates
 			protected.GET("/ws", api.HandleWebSocket)
 
-			// Terminal WebSocket
-			protected.GET("/terminal/ws", api.HandleTerminalWebSocket)
-
 			// Settings
 			settings := protected.Group("/settings")
 			{
@@ -204,6 +201,10 @@ func main() {
 				settings.PUT("", api.UpdateSettings)
 			}
 		}
+
+		// Terminal WebSocket - outside protected group because it validates token from query param
+		// (WebSocket upgrade cannot send Authorization header)
+		apiGroup.GET("/terminal/ws", api.HandleTerminalWebSocket)
 	}
 
 	// Serve frontend
