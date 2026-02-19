@@ -132,6 +132,14 @@ curl -X POST http://localhost:8888/api/auth/login \
 - Case-insensitive usernames improve UX without compromising security
 - LOWER() SQL function is safe and doesn't introduce SQL injection
 
+### Performance Note
+The `LOWER(username)` function in the WHERE clause prevents using standard indexes on the username column. For small to medium deployments (< 10,000 users), the performance impact is negligible. For large-scale deployments, consider:
+1. Adding a function-based index: `CREATE INDEX idx_username_lower ON users (LOWER(username))`
+2. Storing usernames in lowercase and normalizing during user creation
+3. Using a separate normalized_username column with an index
+
+Current implementation prioritizes simplicity and immediate usability improvement.
+
 ## Deployment Guide
 
 ### Upgrading
