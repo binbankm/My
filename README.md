@@ -146,15 +146,15 @@ go build -o serverpanel main.go
 - [x] 基础系统监控
 - [x] 文件管理
 - [x] 用户认证
-- [ ] Docker完整集成
-- [ ] 数据库连接管理（MySQL/PostgreSQL）
-- [ ] Nginx配置管理
-- [ ] 定时任务管理
-- [ ] 日志查看器
+- [x] Docker完整集成
+- [x] 数据库连接管理（MySQL/PostgreSQL）
+- [x] Nginx配置管理
+- [x] 定时任务管理
+- [x] 日志查看器
 - [ ] 终端/SSH集成
-- [ ] 备份和恢复
-- [ ] 多用户权限管理
-- [ ] WebSocket实时通信
+- [x] 备份和恢复
+- [x] 多用户权限管理
+- [x] WebSocket实时通信
 
 ### 🤝 贡献
 
@@ -296,15 +296,15 @@ go build -o serverpanel main.go
 - [x] Basic system monitoring
 - [x] File management
 - [x] User authentication
-- [ ] Complete Docker integration
-- [ ] Database connection management (MySQL/PostgreSQL)
-- [ ] Nginx configuration management
-- [ ] Scheduled tasks
-- [ ] Log viewer
+- [x] Complete Docker integration
+- [x] Database connection management (MySQL/PostgreSQL)
+- [x] Nginx configuration management
+- [x] Scheduled tasks
+- [x] Log viewer
 - [ ] Terminal/SSH integration
-- [ ] Backup and restore
-- [ ] Multi-user permissions
-- [ ] WebSocket real-time communication
+- [x] Backup and restore
+- [x] Multi-user permissions
+- [x] WebSocket real-time communication
 
 ### 🤝 Contributing
 
